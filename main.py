@@ -44,13 +44,13 @@ with tf.Graph().as_default(), tf.Session(config=tf.ConfigProto(gpu_options=gpu_o
 
     adj_matrix = get_adj_matrix(train_dict, rel_dict, num_item, args.alpha, args.beta, args.max_len)
 
-    print("Model preparing...")
+    print('Model preparing...')
     model = GES_SASRec(adj_matrix, num_user, num_item, args)
     sess.run(tf.global_variables_initializer())
     validate_data = get_validate_data(train_dict, validate_dict, negative_dict, num_item, args.max_len)
     test_data = get_test_data(train_dict, validate_dict, test_dict, negative_dict, num_item, args.max_len)
 
-    print("Model training...")
+    print('Model training...')
     for epoch in range(1, args.num_epoch+1):
         t1 = time.time()
         train_loss = list()
@@ -60,8 +60,8 @@ with tf.Graph().as_default(), tf.Session(config=tf.ConfigProto(gpu_options=gpu_o
             loss, _ = sess.run([model.loss, model.train_op], feed_dict=get_feed_dict(model, batch, args.emb_dropout_rate, args.node_dropout_rate))
             train_loss.append(loss)
         train_loss = np.mean(train_loss)
-        print("epoch: %d, %.2fs" % (epoch, time.time() - t1))
-        print("training loss: %.4f" % (train_loss))
+        print('epoch: %d, %.2fs' % (epoch, time.time() - t1))
+        print('training loss: %.4f' % (train_loss))
 
         batch_size_test = 1000
         rank_list = list()
@@ -70,7 +70,7 @@ with tf.Graph().as_default(), tf.Session(config=tf.ConfigProto(gpu_options=gpu_o
             rank_list += np.reshape(test_logits, [-1, 1000]).argsort()[:, ::-1].tolist()
         metric_validate_10 = evaluate(rank_list, 0, 10)
 
-    print("Model testing...")
+    print('Model testing...')
     batch_size_test = 1000
     rank_list = list()
     for start in range(0, num_user, batch_size_test):

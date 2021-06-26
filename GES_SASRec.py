@@ -9,7 +9,7 @@ import tensorflow as tf
 
 class GES_SASRec(object):
     def __init__(self, adj_matrix, num_user, num_item, args):
-        print("model preparing...")
+        print('model preparing...')
         self.adj_matrix = tf.SparseTensor(adj_matrix[0], adj_matrix[1], adj_matrix[2])
         self.num_user = num_user
         self.num_item = num_item
@@ -24,14 +24,14 @@ class GES_SASRec(object):
 
         self.emb_dropout_rate = tf.placeholder(tf.float32)
         self.node_dropout_rate = tf.placeholder(tf.float32)
-        self.input_seq = tf.placeholder(tf.int32, [None, self.max_len], name="input_seq")
-        self.pos_seq = tf.placeholder(tf.int32, [None, self.max_len], name="pos_seq")
-        self.neg_seq = tf.placeholder(tf.int32, [None, self.max_len], name="neg_seq")
+        self.input_seq = tf.placeholder(tf.int32, [None, self.max_len], name='input_seq')
+        self.pos_seq = tf.placeholder(tf.int32, [None, self.max_len], name='pos_seq')
+        self.neg_seq = tf.placeholder(tf.int32, [None, self.max_len], name='neg_seq')
 
         mask = tf.expand_dims(tf.to_float(tf.not_equal(self.input_seq, self.num_item)), -1)
 
         with tf.name_scope('item_embedding'):
-            item_embedding = tf.Variable(tf.random_normal([self.num_item, self.num_factor], stddev=0.01, name="item_embedding"))
+            item_embedding = tf.Variable(tf.random_normal([self.num_item, self.num_factor], stddev=0.01, name='item_embedding'))
 
         with tf.name_scope('graph_convolution'):
             adj_matrix_dropout = self.node_dropout(self.adj_matrix, len(adj_matrix[0]), 1-self.node_dropout_rate)
@@ -40,7 +40,7 @@ class GES_SASRec(object):
             if args.gnn == 'gcn':
                 W = list()
                 for k in range(self.num_layer):
-                    W.append(tf.Variable(tf.random_normal([self.num_factor, self.num_factor], stddev=0.01), name="W"+str(k)))
+                    W.append(tf.Variable(tf.random_normal([self.num_factor, self.num_factor], stddev=0.01), name='W'+str(k)))
                     layer = tf.nn.tanh(tf.matmul(tf.sparse_tensor_dense_matmul(adj_matrix_dropout, layer), W[k]))
                     item_embedding_final += [layer]
             elif args.gnn == 'sgc':
@@ -64,7 +64,7 @@ class GES_SASRec(object):
 
         with tf.name_scope('positional_embedding'):
             position = tf.tile(tf.expand_dims(tf.range(self.max_len), 0), [tf.shape(self.input_seq)[0], 1])
-            position_embedding = tf.Variable(tf.random_normal([self.max_len, self.num_factor], stddev=0.01), name="position_embedding")
+            position_embedding = tf.Variable(tf.random_normal([self.max_len, self.num_factor], stddev=0.01), name='position_embedding')
             p_emb = tf.nn.embedding_lookup(position_embedding, position)
 
         with tf.name_scope('dropout'):
