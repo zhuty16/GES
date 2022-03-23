@@ -27,7 +27,7 @@ The code has been tested running under Python 3.6. The required packages are as 
 * scipy == 1.1.0
 
 ## Dataset
-[Google Drive] (https://drive.google.com/drive/folders/1kMheNsLCVeOPO6FUv5EtlVRxUbOTC8Pb?usp=sharing)
+[Google Drive](https://drive.google.com/drive/folders/1ny_jqRE_NwK3SbnxF4W3Ql_SiItKLKlC?usp=sharing)
 
 ## Example to Run the Codes
 * Amazon Books dataset
